@@ -1,0 +1,18 @@
+fn add(x: int, y: int) = int: <x + y> end
+
+fn foo() <> = void:
+  let x: int = 7;
+  print(x * 2);
+end
+
+fn sub(a: int, b: int) = int: <result>
+  result = a - b;
+end
+
+fn main() = int: <0>
+  let x: int = 5;
+  let y: int = 10;
+  print(add(x, y / 2));
+  foo();
+  print(sub(31, 800));
+end 

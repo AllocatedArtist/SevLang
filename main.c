@@ -38,6 +38,13 @@ typedef struct token_list {
   struct token_list* next;
 } token_list_t;
 
+struct {
+  const char* keyword; 
+  enum TokenType type;
+} keywords[] = {
+  { "let", LetType }, 
+};
+
 void remove_whitespace(char* trimmed, const char* untrimmed) { 
   while (*untrimmed != '\0') {
    if (!isspace(*untrimmed)) {
@@ -96,18 +103,18 @@ token_t create_token(enum TokenType type, const char* value, size_t len) {
 token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
   enum TokenType type = NoneType;
   const char* value = NULL;
-  size_t strlen = 0;
+  size_t token_len = 0;
   int i = *counter;
   static int word_counter = 0;
  
   if (line[i] == '(') {
     type = OpenParenthesisType;
     value = "(";
-    strlen = 1;
+    token_len = 1;
   } else if (line[i] == ')') {
     type = ClosedParenthesisType;
     value = ")";
-    strlen = 1;
+    token_len = 1;
   } else if (line[i] == '+' || 
             line[i] == '-'  || 
             line[i] == '*'  || 
@@ -119,27 +126,27 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
     if (line[i] == '*') value = "*";
     if (line[i] == '/') value = "/";
 
-    strlen = 1;
+    token_len = 1;
   } else if (line[i] == '=') {
     type = AssignmentOperatorType;
     value = "=";
-    strlen = 1;
+    token_len = 1;
   } else if (line[i] == ':') {
     type = ColonAssignmentType;
     value = ":";
-    strlen = 1;
+    token_len = 1;
   } else if (line[i] == ';') {
     type = SemiColonType;
     value = ";";
-    strlen = 1;
+    token_len = 1;
   } else {
     if (isdigit(line[i])) {
       type = NumberType;
       char* digit = line;
       sprintf(digit, "%d", atoi(digit + i));
-      strlen = strnlen(digit, size);
+      token_len = strnlen(digit, size);
       value = digit;
-      *counter += (strlen - 1);
+      *counter += (token_len - 1);
     } else if (isalpha(line[i])) { 
       int word_begin = i;
       while (isalpha(line[i]) != false || line[i] == '_') i += 1; 
@@ -148,16 +155,18 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
       if (strncpy_s(*identifier, i_len, line + word_begin, i - word_begin) == false) {
         word_counter += 1; 
         *counter = i - 1;
-        type = IdentifierType;
-        strlen = strnlen(*identifier, i_len);
+        token_len = strnlen(*identifier, i_len);
         value = *identifier;
+        type = IdentifierType;
+        if (strncmp(value, keywords[0].keyword, strlen(keywords[0].keyword)) == 0)
+          type = LetType;
       }
-    }
-  }
+    }   
+  } 
 
   *counter += 1;
  
-  return create_token(type, value, strlen);
+  return create_token(type, value, token_len);
 }
 
 int main(int argc, char** argv) {
@@ -240,31 +249,33 @@ int main(int argc, char** argv) {
   token_list_t* tokens_list = NULL;
 
   if (file_contents != NULL) {
+    /*
     size_t number_of_whitespaces = 0;
     int i = 0;
     while (i < file_size - 1) {
       if (isspace(file_contents[i])) ++number_of_whitespaces;
       ++i;
     }
-    size_t size = file_size - number_of_whitespaces;
+    size_t size = file_size;
     char* trimmed_file = (char*)malloc(size);
     if (trimmed_file == NULL) {
       printf("Unable to allocate memory for splitting whitespace!\n");
       return -1;
     }
-    remove_whitespace(trimmed_file, file_contents);
+    //remove_whitespace(trimmed_file, file_contents);
+    No need to remove white spaces in source file!
+    */
     size_t counter = 0;
-    char* identifier = (char*)malloc(size);
+    char* identifier = (char*)malloc(file_size);
     if (identifier == NULL) {
       printf("Could not initially allocate memory for token identifier!\n");
       exit(-1);
     }
-    while (counter != size - 1) {
-      token_t token = tokenize(trimmed_file, size - 1, &counter, &identifier); 
+    while (counter != file_size - 1) {
+      token_t token = tokenize(file_contents, file_size - 1, &counter, &identifier); 
       if (token.type != NoneType && token.value != NULL) list_add_token(&tokens_list, token);  
     }
     free(identifier);
-    free(trimmed_file);
     free(file_contents);
   }  
   
