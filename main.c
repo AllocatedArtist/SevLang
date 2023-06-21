@@ -3,6 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 
+typedef enum { //just use stdbool bro
+  false,
+  true
+} bool;
+
 enum TokenType {
   NoneType, //Just a placeholder
   FnType,
@@ -88,12 +93,13 @@ token_t create_token(enum TokenType type, const char* value, size_t len) {
   return (token_t) { type, val, len };
 }
 
-token_t tokenize(char* line, size_t size, size_t* counter) {
+token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
   enum TokenType type = NoneType;
   const char* value = NULL;
   size_t strlen = 0;
   int i = *counter;
-  
+  static int word_counter = 0;
+ 
   if (line[i] == '(') {
     type = OpenParenthesisType;
     value = "(";
@@ -122,6 +128,10 @@ token_t tokenize(char* line, size_t size, size_t* counter) {
     type = ColonAssignmentType;
     value = ":";
     strlen = 1;
+  } else if (line[i] == ';') {
+    type = SemiColonType;
+    value = ";";
+    strlen = 1;
   } else {
     if (isdigit(line[i])) {
       type = NumberType;
@@ -131,7 +141,17 @@ token_t tokenize(char* line, size_t size, size_t* counter) {
       value = digit;
       *counter += (strlen - 1);
     } else if (isalpha(line[i])) { 
-     
+      int word_begin = i;
+      while (isalpha(line[i]) != false || line[i] == '_') i += 1; 
+      size_t i_len = i - word_begin * sizeof(char) + 1;
+      *identifier = realloc(*identifier, i_len); 
+      if (strncpy_s(*identifier, i_len, line + word_begin, i - word_begin) == false) {
+        word_counter += 1; 
+        *counter = i - 1;
+        type = IdentifierType;
+        strlen = strnlen(*identifier, i_len);
+        value = *identifier;
+      }
     }
   }
 
@@ -234,12 +254,16 @@ int main(int argc, char** argv) {
     }
     remove_whitespace(trimmed_file, file_contents);
     size_t counter = 0;
-
+    char* identifier = (char*)malloc(size);
+    if (identifier == NULL) {
+      printf("Could not initially allocate memory for token identifier!\n");
+      exit(-1);
+    }
     while (counter != size - 1) {
-      token_t token = tokenize(trimmed_file, size - 1, &counter); 
+      token_t token = tokenize(trimmed_file, size - 1, &counter, &identifier); 
       if (token.type != NoneType && token.value != NULL) list_add_token(&tokens_list, token);  
     }
-    
+    free(identifier);
     free(trimmed_file);
     free(file_contents);
   }  
