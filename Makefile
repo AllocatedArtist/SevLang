@@ -1,9 +1,11 @@
 
+CC = zig cc
+
 
 all: build
 
 build:
-	zig cc main.c -o sev.exe
+	$(CC) main.c -o sev.exe
 
 
 clean:
