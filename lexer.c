@@ -1,11 +1,5 @@
 #include "sev.h"
-
-struct {
-  const char* keyword; 
-  enum TokenType type;
-} keywords[] = {
-  { "let", LetType }, 
-};
+#include <string.h>
 
 
 void remove_whitespace(char* trimmed, const char* untrimmed) { 
@@ -63,12 +57,13 @@ token_t create_token(enum TokenType type, const char* value, size_t len) {
   return (token_t) { type, val, len };
 }
 
+
+
 token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
   enum TokenType type = NoneType;
   const char* value = NULL;
   size_t token_len = 0;
   int i = *counter;
-  static int word_counter = 0;
  
   if (line[i] == '(') {
     type = OpenParenthesisType;
@@ -102,27 +97,78 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
     type = SemiColonType;
     value = ";";
     token_len = 1;
+  } else if (line[i] == '<') {
+    type = OpenBracketType;
+    value = "<";
+    token_len = 1;
+  } else if (line[i] == '>') {
+    type = ClosedBracketType;
+    value = ">";
+    token_len = 1;
+  } else if (line[i] == ',') {
+    type = CommaType;
+    value = ",";
+    token_len = 1;
+  } else if (line[i] == '"') {
+    type = BeingLazyYay;
+    value = "\"";
+    token_len = 1;
+  } else if (line[i] == '%') {
+    type = BeingLazyYay;
+    value = "%";
+    token_len = 1;
+  } else if (line[i] == '\\') {
+    type = BeingLazyYay;
+    value = "\\";
+    token_len = 1;
+  } else if (line[i] == '.') {
+    type = BeingLazyYay;
+    value = ".";
+    token_len = 1;
   } else {
     if (isdigit(line[i])) {
-      type = NumberType;
-      char* digit = line;
-      sprintf(digit, "%d", atoi(digit + i));
-      token_len = strnlen(digit, size);
-      value = digit;
-      *counter += (token_len - 1);
+      int num_begin = i;  
+      while (isdigit(line[i]) != false || line[i] == '.') i += 1;
+      size_t i_len = i - num_begin * sizeof(char) + 1;
+      *identifier = realloc(*identifier, i_len); 
+      if (strncpy_s(*identifier, i_len, line + num_begin, i - num_begin) == false) {
+       type = NumberType; 
+       value = *identifier;
+       token_len = i_len - 1;
+       *counter = i - 1;
+      }
     } else if (isalpha(line[i])) { 
       int word_begin = i;
-      while (isalpha(line[i]) != false || line[i] == '_') i += 1; 
+      while (isalnum(line[i]) != false || line[i] == '_') i += 1; 
       size_t i_len = i - word_begin * sizeof(char) + 1;
       *identifier = realloc(*identifier, i_len); 
       if (strncpy_s(*identifier, i_len, line + word_begin, i - word_begin) == false) {
-        word_counter += 1; 
         *counter = i - 1;
-        token_len = strnlen(*identifier, i_len);
+        token_len = i_len - 1;
         value = *identifier;
         type = IdentifierType;
-        if (strncmp(value, keywords[0].keyword, strlen(keywords[0].keyword)) == 0)
-          type = LetType;
+        //Got lazy here and in a lot of places lol
+        if (strncmp(value, keywords[0].keyword, strlen(keywords[0].keyword)) == 0) {
+          type = keywords[0].type;
+        }
+        if (strncmp(value, keywords[1].keyword, strlen(keywords[1].keyword)) == 0) {
+          type = keywords[1].type;
+        }
+        if (strncmp(value, keywords[2].keyword, strlen(keywords[2].keyword)) == 0) {
+          type = keywords[2].type;
+        }
+        if (strncmp(value, keywords[3].keyword, strlen(keywords[3].keyword)) == 0) {
+          type = keywords[3].type;
+        }
+        if (strncmp(value, keywords[4].keyword, strlen(keywords[4].keyword)) == 0) {
+          type = keywords[4].type;
+        }
+        if (strncmp(value, keywords[5].keyword, strlen(keywords[5].keyword)) == 0) {
+          type = keywords[5].type;
+        }
+         if (strncmp(value, keywords[6].keyword, strlen(keywords[6].keyword)) == 0) {
+          type = keywords[6].type;
+        }
       }
     }   
   } 
@@ -153,8 +199,8 @@ void print_lexer(token_list_t* tokens_list) {
       case AssignmentOperatorType:
         printf("(ASSIGNMENT OPERATOR) ");
         break;
-      case IntType:
-        printf("(INT) ");
+      case TypeIdentifierType:
+        printf("(TYPE) ");
         break;
       case ColonAssignmentType:
         printf("(:) ");
@@ -182,6 +228,15 @@ void print_lexer(token_list_t* tokens_list) {
         break;
       case NumberType:
         printf("(NUMBER) ");
+        break;
+      case CommaType:
+        printf("(COMMA) ");
+        break;
+      case CallType:
+        printf("(CALL EXPRESSION!) ");
+        break;
+      case BeingLazyYay:
+        printf("(TODO: IMPLEMENT THIS!) ");
         break;
       default:
         continue;

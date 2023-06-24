@@ -6,11 +6,13 @@ FLAGS = -Wall \
 -g \
 -std=c99 \
 
+build_path = build
 
-OBJ = main.o \
-cli.o \
-lexer.o \
-utility.o \
+OBJ = $(build_path)/main.o \
+$(build_path)/cli.o \
+$(build_path)/lexer.o \
+$(build_path)/utility.o \
+$(build_path)/ast.o \
 
 
 all: build
@@ -18,8 +20,8 @@ all: build
 build: $(OBJ)
 	$(CC) $(OBJ) $(FLAGS) -o sev.exe
 
-%.o: %.c
+$(build_path)/%.o: %.c
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f *.exe *.o
+	rm -f $(build_path)/*.o *.exe

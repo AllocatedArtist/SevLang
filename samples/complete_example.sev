@@ -1,0 +1,18 @@
+fn sub(a: float, b: float) = float: <result> 
+  result = a - b;
+end
+
+fn print_float(a: float) = void: <> 
+  call printf("%.2f\n", a);
+end
+
+fn print_int(a: int) = void: <> 
+  call printf("%d\n", a);
+end
+
+fn main() = int: <0>
+  let foo: float = 69.42;
+  call print_float(sub(foo, 21 / 21));
+  let x: int = 32;
+  call print_int(x);
+end

@@ -1,4 +1,7 @@
 #include "sev.h"
+#include <stdio.h>
+#include <string.h>
+
 
 int main(int argc, char** argv) {  
   const char* filename = init_sev(argc, argv); 
@@ -23,11 +26,31 @@ int main(int argc, char** argv) {
     if (token.type != NoneType && token.value != NULL) list_add_token(&tokens_list, token);  
   }
   free(identifier);
-  free_source_file(&loaded_file);
 
-  print_lexer(tokens_list);
+  ast_list_t* ast_list = produce_ast(tokens_list); 
+  if (ast_list == NULL) return 0;
   
+  char* transpiled = malloc(512);
+  if (transpiled == NULL) {
+    printf("Could not allocate memory for transpiling file!\n");
+    return -1;
+  }
+  
+  char* file_name_ext = strtok(strstr(filename, "/") + 1, ".sev"); //QUICK AND DIRTY 
+  sprintf(transpiled, "%s_TRANSPILED.c", file_name_ext);
+  FILE* transpiled_file = NULL;
+  int err_num = fopen_s(&transpiled_file, transpiled, "w");
+  if (err_num == 0) {
+    fprintf(transpiled_file, "#include <stdio.h>\n"); //Write stdlib files here
+    write_ast_to_file(transpiled_file, ast_list);
+    fclose(transpiled_file);
+  } else {
+    printf("ERROR WRITING FILE!\n");
+  }
+  
+  free(transpiled);
+  free_ast_list(&ast_list);
+  free_source_file(&loaded_file);
   list_free_all_tokens(&tokens_list);
-
   return 0;
 }

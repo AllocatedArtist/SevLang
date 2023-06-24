@@ -1,4 +1,4 @@
-fn add(x: int, y: int) = int: <x + y> end
+fn add(x: int, y: int) = int: <res = x + y> end
 
 fn foo() <> = void:
   let x: int = 7;

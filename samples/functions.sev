@@ -1,0 +1,13 @@
+
+fn add(x: int, y: int) = int: <result> 
+  result = x + y;
+end
+
+fn main() = int: <0>
+  let x: int = 69;
+  let y: int = add(x, add(5, 5));
+  call print("%d", y);
+end
+
+
+
