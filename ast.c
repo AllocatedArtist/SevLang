@@ -103,6 +103,9 @@ void print_ast(AST* ast) {
     case AST_BINARY_OPERATION:
       printf(" %s ", GET_AST_DATA(ast, AST_BINARY_OPERATION).op);
       break; 
+    case AST_COMMENT:
+      printf("%s", GET_AST_DATA(ast, AST_COMMENT).comment);
+      break;
     case AST_FUNCTION_DECLARATION:
       printf("%s %s(", GET_AST_DATA(ast, AST_FUNCTION_DECLARATION).type, GET_AST_DATA(ast, AST_FUNCTION_DECLARATION).name);
       for (int i = 0; i < GET_AST_DATA(ast, AST_FUNCTION_DECLARATION).num_parameters; ++i) {
@@ -402,6 +405,17 @@ ast_list_t* produce_ast(token_list_t* tokens_list) {
       }
     }
 
+    if (current->current.type == CommentType) {
+      push_ast_list(&list, AST_NODE(AST_COMMENT, "/*"));
+      current = current->next;
+      while (current != NULL && current->current.type != CommentType) {
+        push_ast_list(&list, AST_NODE(AST_COMMENT, current->current.value));
+        current = current->next;
+      }
+      push_ast_list(&list, AST_NODE(AST_COMMENT, "*/"));
+      push_ast_list(&list, AST_NODE(AST_END_LINE, ""));
+    }
+
     if (current->current.type == SemiColonType) {
       push_ast_list(&list, AST_NODE(AST_END_LINE, ";"));
     }
@@ -456,6 +470,9 @@ void write_ast(AST* ast, FILE* stream) {
       } else {
         fprintf(stream," {\n");
       }
+      break;
+    case AST_COMMENT:
+      fprintf(stream, "%s", GET_AST_DATA(ast, AST_COMMENT).comment);
       break;
     case AST_END_LINE:
       if (GET_AST_DATA(ast, AST_END_LINE).value != NULL) {

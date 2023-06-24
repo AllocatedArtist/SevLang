@@ -1,7 +1,5 @@
 
-let x: int = 9;
-let y: int = 6;
-let z: int = ((x - y) / 3) * 2;
-let foo: int = 67 + z;
-let larger_num: int = 42069;
+#"Hello World! This is a comment!"# 
+
+
 

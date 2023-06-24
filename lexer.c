@@ -131,10 +131,14 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
     type = BeingLazyYay;
     value = "!";
     token_len = 1;
+  } else if (line[i] == '#') {
+    type = CommentType;
+    value = "#";
+    token_len = 1;
   } else if (line[i] == '.') {
     type = BeingLazyYay;
     value = ".";
-    token_len = 1;
+    token_len = 1; 
   } else {
     if (isdigit(line[i])) {
       int num_begin = i;  

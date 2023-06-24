@@ -1,4 +1,6 @@
 #include <stdio.h>
+/*"This is a comment!"*/
+/*"We put quotation marks here because that is the only way to have spaces!"*/
 float sub(float a, float b) { float result;
 result = a - b;
 return result;

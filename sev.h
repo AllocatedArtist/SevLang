@@ -28,8 +28,10 @@ struct AST {
     AST_CALL_EXPRESSION,
     AST_BINARY_OPERATION,
     AST_END_LINE,
+    AST_COMMENT,
   } type;
   union {
+    struct AST_COMMENT { const char* comment; } AST_COMMENT;
     struct AST_PROGRAM { AST* body; } AST_PROGRAM;
     struct AST_VARIABLE_DECLARATION { const char* type; const char* variable_name; } AST_VARIABLE_DECLARATION;
     struct AST_ASSIGNMENT_R_VAL { const char* assignment; } AST_ASSIGNMENT_R_VAL; //imma cheat lol

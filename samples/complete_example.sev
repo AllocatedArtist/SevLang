@@ -1,6 +1,9 @@
+#"This is a comment!"# 
+#"We put quotation marks here because that is the only way to have spaces!"# 
+
 fn sub(a: float, b: float) = float: <result> 
   result = a - b;
-end
+end 
 
 fn print_float(a: float) = void: <> 
   call printf("%.2f and ", a);
