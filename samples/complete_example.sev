@@ -3,7 +3,7 @@ fn sub(a: float, b: float) = float: <result>
 end
 
 fn print_float(a: float) = void: <> 
-  call printf("%.2f\n", a);
+  call printf("%.2f and ", a);
 end
 
 fn print_int(a: int) = void: <> 
@@ -15,4 +15,5 @@ fn main() = int: <0>
   call print_float(sub(foo, 21 / 21));
   let x: int = 32;
   call print_int(x);
+  call printf("And of course, Hello World!");
 end

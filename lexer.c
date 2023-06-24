@@ -64,6 +64,7 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
   const char* value = NULL;
   size_t token_len = 0;
   int i = *counter;
+  static bool is_in_comment = false;
  
   if (line[i] == '(') {
     type = OpenParenthesisType;
@@ -111,15 +112,24 @@ token_t tokenize(char* line, size_t size, size_t* counter, char** identifier) {
     token_len = 1;
   } else if (line[i] == '"') {
     type = BeingLazyYay;
+    is_in_comment = is_in_comment == true ? false : true;
     value = "\"";
     token_len = 1;
   } else if (line[i] == '%') {
     type = BeingLazyYay;
     value = "%";
     token_len = 1;
+  } else if (line[i] == ' ' && is_in_comment) {
+     type = BeingLazyYay;
+     value = " ";
+     token_len = 1; 
   } else if (line[i] == '\\') {
     type = BeingLazyYay;
     value = "\\";
+    token_len = 1;
+  } else if (line[i] == '!') {
+    type = BeingLazyYay;
+    value = "!";
     token_len = 1;
   } else if (line[i] == '.') {
     type = BeingLazyYay;

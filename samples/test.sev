@@ -1,3 +1,4 @@
-let z: float = 99.0;
-let x: float = 42.0;
-let y: float = 32.12;
+
+fn main() = void: <>
+  call printf("Hello World!\n");
+end
