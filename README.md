@@ -12,8 +12,13 @@ I don't know. I didn't want to think of anything cool and slap it on a throw awa
 - [x] Call functions from C. This works by pasting includes at the top of the file before transpiling Sev code lol. 
 - [x] Create and assign variables values. Current types are *int* and *float*.
 - [x] Mathematical operations. Do it like it's done in C
+- [x] Comments. No multiline comments because we don't process spaces, tabs, etc. 
 - [ ] Meaningful error messages
 - [ ] Conditions and loops
 - [ ] Making custom types
 - [ ] Everything you would expect in the language except for the aforementioned checkmarked features.
+
+## DOCUMENTATION 
+Alright, my favorite part of making this language is teaching you about it!
+
 
