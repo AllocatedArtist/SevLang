@@ -8,7 +8,7 @@ This goes without saying, but this language is not meant for production nor is t
 I would fix some bugs that crash the program. Furthermore, I would implement a custom standard library for SevLang and use that instead of `stdio.h`. Crucial language features like loops, and if-statements. Types like `bool`, a custom `string` type, `arrays`, `dynamic arrays`, etc. Memory management will still be manual since I'm too lazy to program a garbage collector. Lastly, some sort of system to link multiple files together as modules. Perhaps this would be a program that writes custom Makefiles. Anyways, this was just a throw away project because I was bored and it really took a lot of discipline to finish this (I say *finish* very loosely) and not move to a new project. Ignore the fact I only worked on this for less than a week. Also, lot's of bad, unsafe code was written 😄. 
 
 ## Why Sev? 
-I don't know. I didn't want to think of anything cool and slap it on a throw away project.
+I don't know. I didn't want to think of a cool name and slap it on a throw away project.
 
 ## Features *(and lack of thereof)* 
 - [x] Declare functions
