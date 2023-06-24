@@ -1,4 +1,0 @@
-
-fn main() = void: <>
-  call printf("Hello World!\n");
-end

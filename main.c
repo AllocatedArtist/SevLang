@@ -30,25 +30,18 @@ int main(int argc, char** argv) {
   ast_list_t* ast_list = produce_ast(tokens_list); 
   if (ast_list == NULL) return 0;
   
-  char* transpiled = malloc(512);
-  if (transpiled == NULL) {
-    printf("Could not allocate memory for transpiling file!\n");
-    return -1;
-  }
   
-  char* file_name_ext = strtok(strstr(filename, "/") + 1, ".sev"); //QUICK AND DIRTY 
-  sprintf(transpiled, "%s_TRANSPILED.c", file_name_ext);
+  //char* file_name_ext = strtok(strstr(filename, "/") + 1, ".sev"); //QUICK AND DIRTY 
   FILE* transpiled_file = NULL;
-  int err_num = fopen_s(&transpiled_file, transpiled, "w");
+  int err_num = fopen_s(&transpiled_file, "EDIT_THIS_PLEASE.c", "w");
   if (err_num == 0) {
     fprintf(transpiled_file, "#include <stdio.h>\n"); //Write stdlib files here
     write_ast_to_file(transpiled_file, ast_list);
     fclose(transpiled_file);
   } else {
-    printf("ERROR WRITING FILE!\n");
+    printf("ERROR WRITING FILE! ERRNUM[%d]\n", err_num);
   }
   
-  free(transpiled);
   free_ast_list(&ast_list);
   free_source_file(&loaded_file);
   list_free_all_tokens(&tokens_list);
